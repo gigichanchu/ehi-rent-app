@@ -160,7 +160,7 @@ const EXP_CATS = ["Repairs and maintenance","Salaries and wages","Security and j
 const ROLE_LABEL = { superadmin:"Superadmin", admin:"Admin", staff:"Staff", accounting:"Accounting", tenant:"Tenant" };
 const TABS = {
   superadmin:[["today","Today"],["verify","Verify"],["billing","Water & Light"],["record","Record payment"],["deposits","Bank Deposits"],["tenants","Tenants"],["expenses","Expenses"],["invoices","VAT Invoices"],["reports","Reports"],["users","Logins"],["settings","Settings"]],
-  admin:[["today","Today"],["verify","Verify"],["billing","Water & Light"],["record","Record payment"],["deposits","Bank Deposits"],["tenants","Tenants"],["expenses","Expenses"],["invoices","VAT Invoices"],["reports","Reports"],["users","Logins"]],
+  admin:[["today","Today"],["verify","Verify"],["billing","Water & Light"],["record","Record payment"],["deposits","Bank Deposits"],["tenants","Tenants"],["expenses","Expenses"],["invoices","VAT Invoices"],["reports","Reports"],["users","Logins"],["settings","Settings"]],
   staff:[["today","Today"],["verify","Verify"],["billing","Water & Light"],["record","Record payment"],["deposits","Bank Deposits"],["tenants","Tenants"],["reports","Reports"]],
   accounting:[["today","Today"],["verify","Verify"],["deposits","Bank Deposits"],["tenants","Tenants"],["expenses","Expenses"],["invoices","VAT Invoices"],["reports","Reports"]],
   tenant:[["pay","Pay"],["statement","My statement"],["profile","My details"]],
@@ -191,6 +191,7 @@ const tempPw = () => Math.random().toString(36).slice(2,6)+"-"+Math.floor(1000+M
 const role = () => S.me && S.me.role;
 const isOffice = () => ["superadmin","admin","staff","accounting"].includes(role());
 const isSuper = () => role()==="superadmin";
+const isManager = () => role()==="superadmin"||role()==="admin";
 const canBill = () => ["superadmin","admin","staff"].includes(role());
 const canExpense = () => ["superadmin","admin","accounting"].includes(role());
 const canDeposit = () => ["superadmin","admin"].includes(role());
@@ -543,7 +544,7 @@ function vToday(){
   <section class="panel"><h2>Stalls</h2>
   ${rows.length?`<div class="tbl"><table><thead><tr><th>Code</th><th>Stall</th><th>Tenant</th><th>Plan</th><th>Current rent</th><th class="r">Rent due</th><th class="r">Water & light</th><th class="r">Total due</th></tr></thead><tbody>
   ${rows.map(({x,cp,st,d})=>`<tr class="click" data-stmt="${x.id}"><td><span class="code">${esc(x.code)}</span></td><td>${esc(x.stall_no)}</td><td>${esc(x.full_name)}<div class="small muted">${esc(x.store_name)}</div></td><td>${PLAN[x.plan]}<div class="small muted num">${peso(x.rate)}</div></td><td>${cp?rentPill(st):'<span class="pill mute">Not started</span>'}</td><td class="r num">${d.rent.amount?peso(d.rent.amount):"–"}</td><td class="r num">${(d.e.due+d.w.due)?peso(d.e.due+d.w.due):"–"}</td><td class="r num"><b>${d.total?peso(d.total):"–"}</b></td></tr>`).join("")}
-  </tbody></table></div><p class="small muted">Tap a row to open the tenant's statement.</p>`:`<div class="empty">No tenants yet. ${isSuper()?"Add them in Tenants.":""}</div>`}
+  </tbody></table></div><p class="small muted">Tap a row to open the tenant's statement.</p>`:`<div class="empty">No tenants yet. ${isManager()?"Add them in Tenants.":""}</div>`}
   </section>`;
 }
 
@@ -729,7 +730,7 @@ function vRecord(){
 function vTenants(){
   const all=Object.values(S.tenants).sort((a,b)=>(a.stall_no||"").localeCompare(b.stall_no||"",undefined,{numeric:true}));
   const loginOf = tid => Object.values(S.profiles).find(p=>p.tenant_id===tid);
-  app.innerHTML = `<div class="spread"><div><h1>Tenants</h1><div class="small muted">${all.filter(t=>t.active).length} active stalls. Tap a row for the statement.</div></div>${isSuper()?`<button class="btn primary" id="addT" type="button">Add tenant</button>`:""}</div>
+  app.innerHTML = `<div class="spread"><div><h1>Tenants</h1><div class="small muted">${all.filter(t=>t.active).length} active stalls. Tap a row for the statement.</div></div>${isManager()?`<button class="btn primary" id="addT" type="button">Add tenant</button>`:""}</div>
   <div class="tbl"><table><thead><tr><th>Code</th><th>Stall</th><th>Tenant</th><th>Mobile</th><th>Plan</th><th>Water / Light</th><th class="r">Deposit held</th><th class="r">Balance</th><th>Login</th></tr></thead><tbody>
   ${all.map(t=>{ const l=loginOf(t.id); return `<tr class="click" data-stmt="${t.id}" style="${t.active?"":"opacity:.55"}"><td><span class="code">${esc(t.code)}</span></td><td>${esc(t.stall_no)}</td><td>${esc(t.full_name)}<div class="small muted">${esc(t.store_name)}</div></td><td class="num small">${esc(t.mobile)}</td><td>${PLAN[t.plan]}<div class="small muted num">${peso(t.rate)}</div></td><td class="small">${{meter:"Meter",fixed:"Fixed",none:"None"}[t.water_mode]} / ${{meter:"Meter",fixed:"Fixed",none:"None"}[t.electric_mode]}</td><td class="r num">${peso(depositHeld(t.id))}</td><td class="r num">${t.active?peso(tenantDue(t.id).total):"Moved out"}</td><td>${l?`<span class="pill ${l.active?"ok":"mute"}">@${esc(l.username)}</span>`:'<span class="pill mute">None</span>'}</td></tr>`; }).join("")||`<tr><td colspan="9" class="muted">No tenants yet.</td></tr>`}
   </tbody></table></div>`;
@@ -738,7 +739,7 @@ function vTenants(){
 function openStatement(tid){
   const t=T(tid);
   showDialog(`<div class="spread"><div><h2>${esc(t.full_name)}</h2><div class="muted small"><span class="code">${esc(t.code)}</span> · Stall ${esc(t.stall_no)} · ${esc(t.store_name||"")} · ${esc(t.mobile||"")}</div></div>
-    <div class="row">${canBill()?`<button class="btn sm" data-recfor="${tid}" type="button">Record payment</button>`:""}${isSuper()?`<button class="btn sm" data-edit-t="${tid}" type="button">Edit tenant</button>`:""}${canDeposit()&&depositHeld(tid)>0?`<button class="btn sm" data-depmove="${tid}" type="button">Refund or forfeit deposit</button>`:""}<button class="btn sm" data-dlstmt="${tid}" type="button">Excel</button><button class="btn sm" data-prstmt="${tid}" type="button">Print</button><button class="btn sm primary" data-sendstmt="${tid}" type="button">Send to tenant</button></div></div>
+    <div class="row">${canBill()?`<button class="btn sm" data-recfor="${tid}" type="button">Record payment</button>`:""}${isManager()?`<button class="btn sm" data-edit-t="${tid}" type="button">Edit tenant</button>`:""}${canDeposit()&&depositHeld(tid)>0?`<button class="btn sm" data-depmove="${tid}" type="button">Refund or forfeit deposit</button>`:""}<button class="btn sm" data-dlstmt="${tid}" type="button">Excel</button><button class="btn sm" data-prstmt="${tid}" type="button">Print</button><button class="btn sm primary" data-sendstmt="${tid}" type="button">Send to tenant</button></div></div>
     <div style="display:flex;flex-direction:column;gap:14px;margin-top:12px">${statementHTML(tid)}</div>`);
   hydrateImages($("#dlg"));
 }
@@ -1085,7 +1086,7 @@ function vUsers(){
     return;
   }
   app.innerHTML = `<div class="spread"><div><h1>Logins</h1><div class="small muted">Only you create logins. Usernames are the person's name, e.g. maria.santos.</div></div><button class="btn primary" id="addU" type="button">Create login</button></div>
-  <div class="note">Admin verifies, records payments, bills water and light, enters expenses, and runs reports. Staff verify, record payments, bill water and light, and see collection reports without expenses. Accounting verifies, enters expenses and VAT invoices, and runs reports. Only you edit tenants, rates, payment accounts, and the QR code. Admin also resets passwords, including yours.</div>
+  <div class="note">Admin verifies, records payments, bills water and light, enters expenses, and runs reports. Staff verify, record payments, bill water and light, and see collection reports without expenses. Accounting verifies, enters expenses and VAT invoices, and runs reports. You and Admin edit tenants, rates, payment accounts, and the QR code. Admin also resets passwords, including yours.</div>
   <div class="tbl"><table><thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Tenant</th><th>Status</th><th></th></tr></thead><tbody>
   ${all.map(p=>`<tr style="${p.active?"":"opacity:.55"}"><td>${esc(p.full_name)}</td><td class="num">@${esc(p.username)}</td><td>${ROLE_LABEL[p.role]}</td><td>${p.tenant_id?`<span class="code">${esc(tCode(p.tenant_id))}</span>`:"–"}</td><td>${p.active?'<span class="pill ok">Active</span>':'<span class="pill mute">Disabled</span>'}</td>
   <td><div class="row" style="flex-wrap:nowrap"><button class="btn sm" data-reset="${p.id}" type="button">Reset password</button>${p.id!==S.me.id?`<button class="btn sm" data-role="${p.id}" type="button">Change role</button><button class="btn sm ${p.active?"bad":""}" data-active="${p.id}" type="button">${p.active?"Disable":"Enable"}</button>`:""}</div></td></tr>`).join("")}
