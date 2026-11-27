@@ -28,7 +28,7 @@
 html,body{margin:0}
 body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.5;padding-top:env(safe-area-inset-top,0px)}
 [hidden]{display:none!important}
-.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1440px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 header.top{position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
 .bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px}
 .brand{display:flex;flex-direction:column;min-width:0}
@@ -39,7 +39,43 @@ header.top{position:sticky;top:0;z-index:5;background:var(--surface);border-bott
 .tabs button{border:0;background:transparent;color:var(--muted);font:600 14px var(--f-body);padding:8px 12px;border-radius:999px;white-space:nowrap;cursor:pointer}
 .tabs button[aria-selected="true"]{background:var(--accent-soft);color:var(--accent)}
 .tabs .count{display:inline-block;min-width:20px;padding:0 6px;margin-left:6px;border-radius:999px;background:var(--warn);color:#fff;font-size:12px;text-align:center}
-main{padding-block:20px 60px;display:flex;flex-direction:column;gap:20px}
+main{padding:20px 24px 60px;display:flex;flex-direction:column;gap:20px;min-width:0}
+.shell{display:grid;grid-template-columns:232px minmax(0,1fr);max-width:1440px;margin:0 auto}
+.shell.no-side{grid-template-columns:minmax(0,1fr)}
+.shell.no-side .side{display:none}
+.side{position:sticky;top:var(--hdr-h,62px);align-self:start;height:calc(100vh - var(--hdr-h,62px));overflow-y:auto;border-right:1px solid var(--line);background:var(--surface);padding:12px 10px 24px}
+.side .grp{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:14px 12px 4px}
+.side .grp:first-child{margin-top:2px}
+.side button{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;text-align:left;border:0;background:transparent;color:var(--fg);font:600 14px var(--f-body);padding:9px 12px;border-radius:8px;cursor:pointer}
+.side button:hover{background:var(--sunk)}
+.side button[aria-current="page"]{background:var(--accent-soft);color:var(--accent)}
+.side .count{display:inline-block;min-width:20px;padding:0 6px;border-radius:999px;background:var(--warn);color:#fff;font-size:12px;text-align:center}
+#menuBtn{display:none}
+.scrim{display:none}
+@media (max-width:900px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .side{position:fixed;left:0;top:0;bottom:0;height:100vh;width:270px;z-index:40;transform:translateX(-105%);transition:transform .2s ease;box-shadow:0 0 24px rgba(0,0,0,.25);padding-top:16px}
+  body.nav-open .side{transform:none}
+  body.nav-open .scrim{display:block;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:35}
+  #menuBtn{display:inline-flex}
+  main{padding:16px 14px 60px}
+  table.fixed{width:1080px;max-width:none}
+  .who #who{display:none}
+  .brand b{font-size:16px}
+  .brand span{font-size:11.5px}
+  .bar{padding-block:8px}
+}
+.toolbar{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.toolbar input[type=search]{max-width:280px;min-width:200px}
+.spread .toolbar{flex:1;justify-content:flex-end;align-items:center}
+table.fixed{table-layout:fixed}
+.tbl thead th{position:sticky;top:0;z-index:1}
+.lookup td{vertical-align:middle}
+.lookup .sub{font-size:12.5px;color:var(--muted);font-weight:500}
+.money{font-family:var(--f-mono);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.rate{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.formfoot{display:flex;flex-direction:column;gap:8px;position:sticky;bottom:-16px;background:var(--surface);padding:10px 0 2px;border-top:1px solid var(--line)}
+.danger{border:1px solid var(--bad);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px;background:var(--surface)}
 h1,h2,h3{font-family:var(--f-display);letter-spacing:-.01em;margin:0;text-wrap:balance}
 h1{font-size:26px} h2{font-size:20px} h3{font-size:16px}
 p{margin:0}
@@ -115,7 +151,8 @@ dialog img{max-height:70vh;width:auto;display:block;margin:0 auto}
   @page{margin:12mm}
   :root{color-scheme:light}
   body{background:#fff;color:#000;font-size:11pt;padding:0}
-  header.top,.no-print,.btn,.seg,.toast,dialog,label input,label select{display:none!important}
+  header.top,.side,.scrim,.no-print,.btn,.seg,.toast,dialog,label input,label select,.toolbar{display:none!important}
+  .shell{display:block} main{padding:0}
   .print-head{display:block;margin-bottom:8px}
   .tbl{overflow:visible;border-color:#999}
   table{font-size:9.5pt} th{background:#eee!important;color:#000} td,th{padding:5px 7px}
@@ -130,13 +167,13 @@ dialog img{max-height:70vh;width:auto;display:block;margin:0 auto}
 <header class="top" id="hdr" hidden>
   <div class="wrap">
     <div class="bar">
-      <div class="brand"><b id="coName">EHI Stall Rentals</b><span id="roleLine"></span></div>
+      <div class="row" style="flex-wrap:nowrap;gap:10px;min-width:0"><button class="btn sm" id="menuBtn" type="button" aria-label="Open menu">☰ Menu</button><div class="brand"><b id="coName">EHI Stall Rentals</b><span id="roleLine"></span></div></div>
       <div class="who"><span id="who"></span><button class="btn sm" id="chgPw" type="button">Change password</button><button class="btn sm" id="logout" type="button">Log out</button></div>
     </div>
-    <nav class="tabs" id="tabs" role="tablist"></nav>
   </div>
 </header>
-<main class="wrap" id="app"><div class="empty">Loading…</div></main>
+<div class="shell no-side" id="shell"><nav class="side" id="side" aria-label="Main menu"></nav><main id="app"><div class="empty">Loading…</div></main></div>
+<div class="scrim" id="scrim"></div>
 <div class="toast" id="toast" hidden></div>
 <div id="printArea"></div>
 <dialog id="dlg"><div id="dlgBody"></div><div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn" id="dlgClose" type="button">Close</button></div></dialog>
@@ -158,13 +195,24 @@ const PLAN = { daily:"Daily", weekly:"Weekly", monthly:"Monthly" };
 const PLAN_UNIT = { daily:"day", weekly:"week", monthly:"month" };
 const EXP_CATS = ["Repairs and maintenance","Salaries and wages","Security and janitorial","Supplies","Taxes and permits","Bank and e-wallet fees","Other"];
 const ROLE_LABEL = { superadmin:"Superadmin", admin:"Admin", staff:"Staff", accounting:"Accounting", tenant:"Tenant" };
-const TABS = {
-  superadmin:[["today","Today"],["verify","Verify"],["billing","Water & Light"],["record","Record payment"],["deposits","Bank Deposits"],["tenants","Tenants"],["expenses","Expenses"],["invoices","VAT Invoices"],["reports","Reports"],["users","Logins"],["settings","Settings"]],
-  admin:[["today","Today"],["verify","Verify"],["billing","Water & Light"],["record","Record payment"],["deposits","Bank Deposits"],["tenants","Tenants"],["expenses","Expenses"],["invoices","VAT Invoices"],["reports","Reports"],["users","Logins"],["settings","Settings"]],
-  staff:[["today","Today"],["verify","Verify"],["billing","Water & Light"],["record","Record payment"],["deposits","Bank Deposits"],["tenants","Tenants"],["reports","Reports"]],
-  accounting:[["today","Today"],["verify","Verify"],["deposits","Bank Deposits"],["tenants","Tenants"],["expenses","Expenses"],["invoices","VAT Invoices"],["reports","Reports"]],
-  tenant:[["pay","Pay"],["statement","My statement"],["profile","My details"]],
+const NAV = [
+  ["Overview",[["today","Dashboard"]]],
+  ["Collections",[["verify","Verify payments"],["record","Record payment"],["deposits","Bank deposits"]]],
+  ["Billing",[["billing","Water & light"],["charges","Charge history"],["invoices","VAT invoices"]]],
+  ["Records",[["tenants","Tenants"],["expenses","Expenses"],["reports","Reports"]]],
+  ["Admin",[["users","Logins"],["settings","Settings"]]],
+  ["My stall",[["pay","Pay"],["statement","My statement"],["profile","My details"]]],
+];
+const ACCESS = {
+  superadmin:["today","verify","record","deposits","billing","charges","invoices","tenants","expenses","reports","users","settings"],
+  admin:["today","verify","record","deposits","billing","charges","invoices","tenants","expenses","reports","users","settings"],
+  staff:["today","verify","record","deposits","billing","charges","tenants","reports"],
+  accounting:["today","verify","deposits","charges","invoices","tenants","expenses","reports"],
+  tenant:["pay","statement","profile"],
 };
+const TABS = Object.fromEntries(Object.entries(ACCESS).map(([r,keys])=>[r,NAV.flatMap(([,items])=>items).filter(([k])=>keys.includes(k))]));
+const ONLINE = ["GCash","Maya","InstaPay","Bank deposit"];
+const TEMP_PW = "2345678";
 const S = { me:null, settings:{company:"Erica Holdings Inc.",accounts:[],electric_rate:0,water_rate:0}, tenants:{}, payments:[], charges:[], moves:[], expenses:[], invoices:[], bills:[], profiles:{}, tab:null, invMonth:null,
   rep:{mode:"monthly",date:null,from:null,to:null}, billMonth:null, expMonth:null, signed:{}, channel:null };
 
@@ -187,7 +235,7 @@ const monthStart = iso => iso.slice(0,8)+"01";
 const monthEnd = iso => { const [y,m]=iso.split("-").map(Number); return new Date(Date.UTC(y,m,0)).toISOString().slice(0,10); };
 const cleanUser = u => String(u||"").trim().toLowerCase().replace(/\s+/g,".");
 const suggestUser = name => cleanUser(String(name||"").replace(/[^A-Za-z0-9 ]/g,"").split(" ").filter(Boolean).slice(0,2).join(" "));
-const tempPw = () => Math.random().toString(36).slice(2,6)+"-"+Math.floor(1000+Math.random()*9000);
+const tempPw = () => TEMP_PW;
 const role = () => S.me && S.me.role;
 const isOffice = () => ["superadmin","admin","staff","accounting"].includes(role());
 const isSuper = () => role()==="superadmin";
@@ -195,6 +243,7 @@ const isManager = () => role()==="superadmin"||role()==="admin";
 const canBill = () => ["superadmin","admin","staff"].includes(role());
 const canExpense = () => ["superadmin","admin","accounting"].includes(role());
 const canDeposit = () => ["superadmin","admin"].includes(role());
+const rateText = t => `${peso(t.rate)} / ${PLAN_UNIT[t.plan]||"period"}`;
 
 function toast(msg){ const t=$("#toast"); t.textContent=msg; t.hidden=false; clearTimeout(toast._t); toast._t=setTimeout(()=>t.hidden=true,3000); }
 function showDialog(html){ $("#dlgBody").innerHTML=html; if(!$("#dlg").open) $("#dlg").showModal(); }
@@ -217,7 +266,7 @@ async function loadMe(){
   if(data.must_change_password) return viewChangePw(true);
   S.tab = TABS[data.role][0][0];
   const t=todayPH(); S.rep.date=t; S.rep.from=monthStart(t); S.rep.to=t; S.billMonth=t.slice(0,7); S.expMonth=t.slice(0,7); S.invMonth=t.slice(0,7);
-  $("#hdr").hidden=false;
+  $("#hdr").hidden=false; $("#shell").classList.remove("no-side");
   $("#who").textContent = data.full_name;
   $("#roleLine").textContent = ROLE_LABEL[data.role] + " · @" + data.username;
   await loadAll();
@@ -225,7 +274,7 @@ async function loadMe(){
   draw();
 }
 function viewLogin(msg){
-  $("#hdr").hidden=true;
+  $("#hdr").hidden=true; $("#shell").classList.add("no-side");
   app.innerHTML = `
   <section class="panel login">
     <div><h1>EHI Stall Rentals</h1><p class="muted">Erica Holdings Inc. rent, water, and light payments</p></div>
@@ -245,7 +294,7 @@ function viewLogin(msg){
   };
 }
 function viewChangePw(forced){
-  $("#hdr").hidden = forced;
+  $("#hdr").hidden = forced; $("#shell").classList.toggle("no-side", !!forced);
   app.innerHTML = `
   <section class="panel login">
     <div><h1>${forced?"Set your own password":"Change password"}</h1><p class="muted">${forced?"You signed in with a temporary password. Choose a new one to continue.":"Choose a new password for @"+esc(S.me.username)+"."}</p></div>
@@ -262,7 +311,7 @@ function viewChangePw(forced){
     e.preventDefault();
     const a=$("#cp1").value, b=$("#cp2").value;
     if(a!==b){ $("#cpErr").innerHTML='<div class="err">The two passwords do not match.</div>'; return; }
-    if(/^EHI-/i.test(a)){ $("#cpErr").innerHTML='<div class="err">Choose a password different from the temporary one.</div>'; return; }
+    if(/^EHI-/i.test(a) || a===TEMP_PW){ $("#cpErr").innerHTML='<div class="err">Choose a password different from the temporary one.</div>'; return; }
     const { error } = await sb.auth.updateUser({ password:a });
     if(error){ $("#cpErr").innerHTML=`<div class="err">${esc(errMsg(error))}</div>`; return; }
     await sb.rpc("password_changed");
@@ -373,18 +422,25 @@ function draw(live){
   if(live){ if($("#dlg").open) return; keepForms(); }
   $("#coName").textContent = (S.settings.company||"EHI")+" Stall Rentals";
   const pending = S.payments.filter(p=>p.status==="pending").length;
-  $("#tabs").innerHTML = TABS[role()].map(([k,l])=>`<button role="tab" data-tab="${k}" aria-selected="${S.tab===k}">${l}${k==="verify"&&pending?`<span class="count">${pending}</span>`:""}</button>`).join("");
-  const views={deposits:vDeposits,invoices:vInvoices,today:vToday,verify:vVerify,billing:vBilling,record:vRecord,tenants:vTenants,expenses:vExpenses,reports:vReports,users:vUsers,settings:vSettings,pay:vPay,statement:vMyStatement,profile:vProfile};
-  (views[S.tab]||vToday)();
+  const allowed=ACCESS[role()]||[];
+  if(!allowed.includes(S.tab)) S.tab=allowed[0];
+  $("#side").innerHTML = NAV.map(([g,items])=>{ const its=items.filter(([k])=>allowed.includes(k)); if(!its.length) return "";
+    return `<div class="grp">${g}</div>`+its.map(([k,l])=>`<button type="button" data-tab="${k}" ${S.tab===k?'aria-current="page"':""}><span>${l}</span>${k==="verify"&&pending?`<span class="count">${pending}</span>`:""}</button>`).join(""); }).join("");
+  const views={charges:vCharges,deposits:vDeposits,invoices:vInvoices,today:vToday,verify:vVerify,billing:vBilling,record:vRecord,tenants:vTenants,expenses:vExpenses,reports:vReports,users:vUsers,settings:vSettings,pay:vPay,statement:vMyStatement,profile:vProfile};
+  (views[S.tab]||vToday)(); setHdrH();
   if(live) restoreForms();
   hydrateImages();
 }
-$("#tabs").addEventListener("click",e=>{ const b=e.target.closest("button[data-tab]"); if(b){ S.tab=b.dataset.tab; for(const k in keep) delete keep[k]; draw(); scrollTo(0,0);} });
+$("#side").addEventListener("click",e=>{ const b=e.target.closest("button[data-tab]"); if(b){ S.tab=b.dataset.tab; for(const k in keep) delete keep[k]; document.body.classList.remove("nav-open"); draw(); scrollTo(0,0);} });
+$("#menuBtn").onclick=()=>document.body.classList.toggle("nav-open");
+$("#scrim").onclick=()=>document.body.classList.remove("nav-open");
+const setHdrH=()=>document.documentElement.style.setProperty("--hdr-h",($("#hdr").offsetHeight||62)+"px"); addEventListener("resize",setHdrH);
 async function hydrateImages(root=document){
   for(const img of root.querySelectorAll("img[data-receipt]")){ const path=img.dataset.receipt;
     if(!S.signed[path]){ const { data } = await sb.storage.from("receipts").createSignedUrl(path, 3600); if(data) S.signed[path]=data.signedUrl; }
     if(S.signed[path]) img.src=S.signed[path]; }
 }
+async function removeFiles(paths){ const list=(paths||[]).filter(Boolean); for(let i=0;i<list.length;i+=100){ try{ await sb.storage.from("receipts").remove(list.slice(i,i+100)); }catch(e){} } }
 const qrUrl = () => S.settings.qr_path ? sb.storage.from("qr").getPublicUrl(S.settings.qr_path).data.publicUrl : "";
 
 /* ===== payment form (tenant and office) ===== */
@@ -397,7 +453,7 @@ function payFormHTML(office, tid){
       ${office?`<label>Tenant<select id="pT">${ten.map(t=>`<option value="${t.id}" ${t.id===tid?"selected":""}>${esc(t.code)} · Stall ${esc(t.stall_no)} · ${esc(t.full_name)}</option>`).join("")}</select></label>`:""}
       <label>Paying for<select id="pCat">${Object.entries(CATS).map(([k,l])=>`<option value="${k}">${l}</option>`).join("")}</select></label>
       <label>Paid through<select id="pChan">${CHANNELS.filter(c=>office||(c!=="Cash"&&c!=="Check")).map(c=>`<option ${office&&c==="Cash"?"selected":""}>${c}</option>`).join("")}</select></label>
-      <label>Reference number<input id="pRef" ${office?"":"required"} autocomplete="off" placeholder="${office?"OR or acknowledgment no.":"From your receipt"}"></label>
+      <label><span id="pRefL">Reference number</span><input id="pRef" autocomplete="off" placeholder="${office?"OR or acknowledgment no.":"From your receipt"}"></label>
       <label data-check hidden>Check number<input id="pChkNo" autocomplete="off"></label>
       <label data-check hidden>Bank of the check<input id="pChkBank" placeholder="e.g. BDO"></label>
       <label data-check hidden>Check date<input id="pChkDate" type="date"></label>
@@ -407,10 +463,10 @@ function payFormHTML(office, tid){
       <label>Date and time paid<input id="pAt" type="datetime-local" required value="${nowLocalPH()}"></label>
     </div>
     <div class="small muted" id="pHint"></div>
-    <label>Receipt screenshot${office?" (optional)":" (recommended)"}<input id="pFile" type="file" accept="image/*"></label>
+    <label><span id="pFileL">Proof of payment</span><input id="pFile" type="file" accept="image/*,application/pdf"></label>
     <label>Note (optional)<input id="pNote"></label>
     <button class="btn primary" type="submit">${office?"Save payment":"Submit payment"}</button>
-    ${office?`<p class="small muted">Cash is marked verified right away and waits in Bank Deposits until deposited. Checks wait in Verify until they clear. Other modes go to the Verify queue.</p>`:`<p class="small muted">EHI checks every payment against the bank before marking it verified.</p>`}
+    ${office?`<p class="small muted">Cash is verified right away and waits in Bank deposits until deposited. Checks wait in Verify until they clear. GCash, Maya, InstaPay, and bank payments need the reference number and proof, then go to Verify.</p>`:`<p class="small muted">The reference number and receipt screenshot are required. EHI checks every payment against the bank before marking it verified.</p>`}
   </form>`;
 }
 function wirePayForm(office){
@@ -423,14 +479,18 @@ function wirePayForm(office){
       if(resetAmt || !$("#pFrom").value) $("#pFrom").value=nextDue(tid);
       const n=Math.max(1,Number($("#pPer").value)||1);
       if(resetAmt!==false) $("#pAmt").value=(Number(t.rate||0)*n).toFixed(2);
-      $("#pHint").textContent = `${PLAN[t.plan]||""} rent ${peso(t.rate)} per ${PLAN_UNIT[t.plan]||"period"}. Covers ${fmtDate($("#pFrom").value)} up to ${fmtDate(addDays(step(t.plan,$("#pFrom").value,n),-1))}.`;
+      $("#pHint").textContent = `${PLAN[t.plan]||""} rent ${rateText(t)}. Covers ${fmtDate($("#pFrom").value)} up to ${fmtDate(addDays(step(t.plan,$("#pFrom").value,n),-1))}.`;
     } else {
       const due = tenantDue(tid)[{electricity:"e",water:"w",deposit:"d",other:"o",vat:"v"}[cat]].due;
       if(resetAmt!==false) $("#pAmt").value = due ? due.toFixed(2) : "";
       $("#pHint").textContent = due ? `${CATS[cat]} balance: ${peso(due)}.` : `No ${CATS[cat].toLowerCase()} balance right now.`;
     }
   };
-  const syncChan=()=>{ const isChk=$("#pChan").value==="Check"; app.querySelectorAll("[data-check]").forEach(el=>el.hidden=!isChk); ["pChkNo","pChkBank"].forEach(id=>{ const el=document.getElementById(id); if(el) el.required=isChk; }); };
+  const syncChan=()=>{ const ch=$("#pChan").value, isChk=ch==="Check", online=ONLINE.includes(ch);
+    app.querySelectorAll("[data-check]").forEach(el=>el.hidden=!isChk); ["pChkNo","pChkBank"].forEach(id=>{ const el=document.getElementById(id); if(el) el.required=isChk; });
+    $("#pRef").required=online; $("#pFile").required=online;
+    $("#pRefL").textContent = online?"Reference number (required)":"Reference or OR number (optional)";
+    $("#pFileL").textContent = online?"Proof of payment, receipt screenshot (required)":"Proof of payment (optional)"; };
   $("#pChan").onchange=syncChan; syncChan();
   $("#pCat").onchange=()=>sync(true);
   $("#pPer").oninput=()=>sync(true);
@@ -440,14 +500,17 @@ function wirePayForm(office){
   $("#fPay").onsubmit = e => savePayment(e, tidOf(), office);
 }
 async function savePayment(e, tid, office){
-  e.preventDefault(); const btn=e.target.querySelector("button[type=submit]"); btn.disabled=true;
+  e.preventDefault(); const btn=e.target.querySelector("button[type=submit]"); if(btn.disabled) return; const label=btn.textContent; btn.disabled=true; btn.textContent="Saving…";
   try{
+    const cat=$("#pCat").value, chan=$("#pChan").value, online=ONLINE.includes(chan);
+    if(online && !$("#pRef").value.trim()) throw new Error("Enter the reference number from the receipt.");
+    if(online && !($("#pFile").files||[])[0]) throw new Error("Attach the receipt screenshot as proof of payment.");
+    if(online){ const dup=S.payments.find(p=>p.channel===chan && p.status!=="rejected" && (p.ref_no||"").trim()===$("#pRef").value.trim()); if(dup) throw new Error(`This ${chan} reference number is already recorded for ${tName(dup.tenant_id)}.`); }
     let receipt_path=null; const f=$("#pFile");
     if(f && f.files[0]){ const file=f.files[0]; const ext=(file.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"");
       receipt_path=`${tid}/${crypto.randomUUID()}.${ext}`;
       const { error } = await sb.storage.from("receipts").upload(receipt_path, file, { contentType:file.type||"image/jpeg" });
-      if(error){ receipt_path=null; toast("Receipt upload failed. Saving without it."); } }
-    const cat=$("#pCat").value, chan=$("#pChan").value;
+      if(error){ receipt_path=null; if(online) throw new Error("The receipt did not upload. Check your connection and try again."); toast("Receipt upload failed. Saving without it."); } }
     const row={ tenant_id:tid, category:cat, amount:Number($("#pAmt").value), channel:chan, ref_no:$("#pRef").value.trim()||null,
       periods: cat==="rent"?Math.max(1,Number($("#pPer").value)||1):1, cover_from: cat==="rent"?($("#pFrom").value||nextDue(tid)):null,
       paid_at:toISO($("#pAt").value), note:$("#pNote").value.trim()||null, receipt_path };
@@ -459,7 +522,7 @@ async function savePayment(e, tid, office){
     toast(office?(chan==="Cash"?"Cash payment saved and verified":"Payment saved. It is in the Verify queue."):"Payment submitted. Status: for checking");
     await loadAll(); if(!office) S.tab="statement"; draw();
     if(office && chan==="Cash"){ const p=S.payments.filter(x=>x.tenant_id===tid).sort((a,b)=>(b.created_at||"").localeCompare(a.created_at||""))[0]; if(p) sendDialog(tid,"Send payment confirmation","Payment received",paymentMessage(p)); }
-  }catch(err){ toast(errMsg(err)); btn.disabled=false; }
+  }catch(err){ toast(errMsg(err)); btn.disabled=false; btn.textContent=label; }
 }
 
 /* ===== Tenant screens ===== */
@@ -507,12 +570,12 @@ function statementHTML(tid){
   </section>
   <section class="panel"><h3>Water, light, deposit, and other charges</h3>
     ${ch.length?`<div class="tbl"><table><thead><tr><th>Date</th><th>Charge</th><th>Details</th><th class="r">Amount</th></tr></thead><tbody>
-    ${ch.map(c=>`<tr><td>${fmtDate(c.bill_date)}</td><td>${CATS[c.kind]}${c.period&&c.period.length===7?` · ${fmtMonth(c.period)}`:""}</td><td class="small">${c.curr_reading!=null?`Reading ${c.prev_reading??"?"} to ${c.curr_reading} = ${r2(c.curr_reading-(c.prev_reading||0))} × ${peso(c.rate)}`:esc(c.note||"")}</td><td class="r num">${peso(c.amount)}</td></tr>`).join("")}</tbody></table></div>`:`<div class="small muted">No charges yet.</div>`}
+    ${ch.map(c=>`<tr><td>${fmtDate(c.bill_date)}</td><td>${CATS[c.kind]}${/^\d{4}-\d{2}$/.test(c.period||"")?` · ${fmtMonth(c.period)}`:""}</td><td class="small">${c.curr_reading!=null?`Reading ${c.prev_reading??"?"} to ${c.curr_reading} = ${r2(c.curr_reading-(c.prev_reading||0))} × ${peso(c.rate)}`:esc(c.note||"")}</td><td class="r num">${peso(c.amount)}</td></tr>`).join("")}</tbody></table></div>`:`<div class="small muted">No charges yet.</div>`}
   </section>
   ${invList(tid)}
   <section class="panel"><h3>Payments</h3>
-    ${pays.length?`<div class="tbl"><table><thead><tr><th>Paid on</th><th>For</th><th>Channel</th><th>Reference</th><th class="r">Amount</th><th>Status</th></tr></thead><tbody>
-    ${pays.map(p=>`<tr><td>${fmtDT(p.paid_at)}</td><td class="small">${coverText(p)}</td><td>${esc(p.channel)}</td><td class="num">${esc(p.ref_no)}</td><td class="r num">${peso(paidAmt(p))}</td><td>${statusPill(p.status)}${p.reject_reason?`<div class="small muted">${esc(p.reject_reason)}</div>`:""}</td></tr>`).join("")}</tbody></table></div>`:`<div class="small muted">No payments yet.</div>`}
+    ${pays.length?`<div class="tbl"><table><thead><tr><th>Paid on</th><th>For</th><th>Mode</th><th>Reference</th><th class="r">Amount</th><th>Status</th>${isManager()?"<th></th>":""}</tr></thead><tbody>
+    ${pays.slice().sort((a,b)=>b.paid_at.localeCompare(a.paid_at)).map(p=>`<tr><td>${fmtDT(p.paid_at)}</td><td class="small">${coverText(p)}</td><td>${esc(p.channel)}</td><td class="num">${esc(p.ref_no||"")}${p.receipt_path&&isOffice()?` <button class="btn sm" data-viewrc="${esc(p.receipt_path)}" type="button">Proof</button>`:""}</td><td class="r num">${peso(paidAmt(p))}</td><td>${statusPill(p.status)}${p.reject_reason?`<div class="small muted">${esc(p.reject_reason)}</div>`:""}</td>${isManager()?`<td><button class="btn sm bad" data-delpay="${p.id}" type="button">Delete</button></td>`:""}</tr>`).join("")}</tbody></table></div>`:`<div class="small muted">No payments yet.</div>`}
   </section>
   ${mv.length?`<section class="panel"><h3>Deposit refunds and forfeits</h3><div class="tbl"><table><thead><tr><th>Date</th><th>Type</th><th class="r">Amount</th><th>Note</th></tr></thead><tbody>
     ${mv.map(m=>`<tr><td>${fmtDate(m.moved_on)}</td><td>${m.kind==="refund"?"Refunded to tenant":"Forfeited to EHI"}</td><td class="r num">${peso(m.amount)}</td><td class="small">${esc(m.note)}</td></tr>`).join("")}</tbody></table></div></section>`:""}`;
@@ -521,7 +584,7 @@ function vMyStatement(){ const tid=S.me.tenant_id; app.innerHTML=`<div class="sp
 function vProfile(){
   const t=T(S.me.tenant_id);
   app.innerHTML = `<h1>My details</h1><div class="panel" style="max-width:680px"><div class="grid2">
-  ${[["Tenant code",t.code],["Full name",t.full_name],["Store name",t.store_name],["Stall number",t.stall_no],["Mobile",t.mobile],["Email",t.email],["Messenger",t.messenger],["Address",t.address],["Rent plan",`${PLAN[t.plan]} · ${peso(t.rate)} per ${PLAN_UNIT[t.plan]}`],["Rent starts",fmtDate(t.rent_start)],["Security deposit",peso(t.deposit_amount)],["Username","@"+S.me.username]].map(([k,v])=>`<div><div class="small muted">${k}</div><div>${esc(v||"–")}</div></div>`).join("")}
+  ${[["Tenant code",t.code],["Full name",t.full_name],["Store name",t.store_name],["Stall number",t.stall_no],["Mobile",t.mobile],["Email",t.email],["Messenger",t.messenger],["Address",t.address],["Rent plan",`${PLAN[t.plan]} · ${rateText(t)}`],["Rent starts",fmtDate(t.rent_start)],["Security deposit",peso(t.deposit_amount)],["Username","@"+S.me.username]].map(([k,v])=>`<div><div class="small muted">${k}</div><div>${esc(v||"–")}</div></div>`).join("")}
   </div><p class="small muted">Contact the EHI office to change your details or plan.</p></div>`;
 }
 
@@ -532,20 +595,33 @@ function vToday(){
   const rows=ten.map(x=>{ const cp=currentPeriod(x.id,t); const st=cp?coverOf(x.id)(cp):"none"; return {x,cp,st,d:tenantDue(x.id)}; });
   const unpaid=rows.filter(r=>r.cp && !r.st);
   const totalDue=rows.reduce((s,r)=>s+r.d.total,0);
+  const f=S.dashF||"all";
+  const shown=rows.filter(r=>f==="all"||(f==="unpaid"?(r.cp&&!r.st)||r.d.total>0:(r.st&&r.d.total===0)));
+  const todays=ps.slice().sort((a,b)=>b.paid_at.localeCompare(a.paid_at));
+  const m=v=>v?peso(v):'<span class="muted">–</span>';
   app.innerHTML = `
-  <div class="spread"><div><h1>Today, ${fmtDate(t)}</h1><div class="small muted">Updates live when a tenant submits or staff verifies.</div></div><button class="btn" data-go="verify" type="button">Open verify queue</button></div>
+  <div class="spread"><div><h1>Dashboard</h1><div class="small muted">${fmtDate(t)} · updates live</div></div><div class="row no-print"><button class="btn" data-go="verify" type="button">Verify queue</button>${canBill()?`<button class="btn primary" data-go="record" type="button">Record payment</button>`:""}</div></div>
   <div class="stats">
-    <div class="stat ok"><div class="k">Verified today</div><div class="v">${peso(sum(ps.filter(p=>p.status==="verified")))}</div></div>
-    <div class="stat warn"><div class="k">For checking</div><div class="v">${peso(sum(ps.filter(p=>p.status==="pending")))}</div><div class="s">${S.payments.filter(p=>p.status==="pending").length} in queue</div></div>
-    <div class="stat ${unpaid.length?"bad":"ok"}"><div class="k">Current rent unpaid</div><div class="v">${unpaid.length} / ${rows.filter(r=>r.cp).length}</div></div>
+    <div class="stat ok"><div class="k">Verified today</div><div class="v">${peso(sum(ps.filter(p=>p.status==="verified")))}</div><div class="s">${ps.filter(p=>p.status==="verified").length} payments</div></div>
+    <div class="stat warn"><div class="k">For checking</div><div class="v">${peso(sum(S.payments.filter(p=>p.status==="pending")))}</div><div class="s">${S.payments.filter(p=>p.status==="pending").length} in queue</div></div>
+    <div class="stat ${unpaid.length?"bad":"ok"}"><div class="k">Rent unpaid today</div><div class="v">${unpaid.length} of ${rows.filter(r=>r.cp).length}</div><div class="s">stalls</div></div>
     <div class="stat ${S.payments.some(isOnHand)?"warn":"ok"}"><div class="k">Cash and checks on hand</div><div class="v">${peso(S.payments.filter(isOnHand).reduce((s,p)=>s+Number(p.amount),0))}</div><div class="s">Not yet deposited</div></div>
-    <div class="stat ${totalDue?"bad":"ok"}"><div class="k">All balances</div><div class="v">${peso(totalDue)}</div><div class="s">Rent, water, light, deposit</div></div>
+    <div class="stat ${totalDue?"bad":"ok"}"><div class="k">All balances</div><div class="v">${peso(totalDue)}</div><div class="s">Rent, water, light, other</div></div>
   </div>
-  <section class="panel"><h2>Stalls</h2>
-  ${rows.length?`<div class="tbl"><table><thead><tr><th>Code</th><th>Stall</th><th>Tenant</th><th>Plan</th><th>Current rent</th><th class="r">Rent due</th><th class="r">Water & light</th><th class="r">Total due</th></tr></thead><tbody>
-  ${rows.map(({x,cp,st,d})=>`<tr class="click" data-stmt="${x.id}"><td><span class="code">${esc(x.code)}</span></td><td>${esc(x.stall_no)}</td><td>${esc(x.full_name)}<div class="small muted">${esc(x.store_name)}</div></td><td>${PLAN[x.plan]}<div class="small muted num">${peso(x.rate)}</div></td><td>${cp?rentPill(st):'<span class="pill mute">Not started</span>'}</td><td class="r num">${d.rent.amount?peso(d.rent.amount):"–"}</td><td class="r num">${(d.e.due+d.w.due)?peso(d.e.due+d.w.due):"–"}</td><td class="r num"><b>${d.total?peso(d.total):"–"}</b></td></tr>`).join("")}
-  </tbody></table></div><p class="small muted">Tap a row to open the tenant's statement.</p>`:`<div class="empty">No tenants yet. ${isManager()?"Add them in Tenants.":""}</div>`}
+  <section class="panel"><div class="spread"><h2>Stalls</h2>
+    <div class="toolbar no-print"><div class="seg" role="group" aria-label="Show">${[["all","All"],["unpaid","With balance"],["paid","Paid up"]].map(([k,l])=>`<button type="button" data-dashf="${k}" aria-pressed="${f===k}">${l}</button>`).join("")}</div>
+    <input type="search" id="dashQ" placeholder="Search name, stall, or code" value="${esc(S.dashQ||"")}" aria-label="Search stalls"></div></div>
+  ${rows.length?`<div class="tbl"><table class="fixed lookup" id="dashTbl"><colgroup><col style="width:80px"><col><col style="width:175px"><col style="width:130px"><col style="width:100px"><col style="width:120px"><col style="width:120px"><col style="width:130px"></colgroup>
+  <thead><tr><th>Stall</th><th>Tenant</th><th>Rent</th><th>Today</th><th class="r">Unpaid</th><th class="r">Rent due</th><th class="r">Water & light</th><th class="r">Total due</th></tr></thead><tbody>
+  ${shown.map(({x,cp,st,d})=>`<tr class="click" data-stmt="${x.id}" data-q="${esc((x.full_name+" "+(x.store_name||"")+" "+x.stall_no+" "+x.code).toLowerCase())}"><td><b>${esc(x.stall_no)}</b><div class="sub"><span class="code">${esc(x.code)}</span></div></td><td><b>${esc(x.full_name)}</b><div class="sub">${esc(x.store_name||"")}</div></td><td><span class="rate">${rateText(x)}</span><div class="sub">${PLAN[x.plan]}</div></td><td>${cp?rentPill(st):'<span class="pill mute">Not started</span>'}</td><td class="money">${d.rent.unpaid.length?`${d.rent.unpaid.length} ${PLAN_UNIT[x.plan]}${d.rent.unpaid.length>1?"s":""}`:'<span class="muted">–</span>'}</td><td class="money">${m(d.rent.amount)}</td><td class="money">${m(d.e.due+d.w.due)}</td><td class="money"><b>${m(d.total)}</b></td></tr>`).join("")||`<tr><td colspan="8" class="muted">No stalls match.</td></tr>`}
+  </tbody><tfoot><tr><td colspan="5">Total, ${shown.length} stall${shown.length===1?"":"s"}</td><td class="money">${peso(shown.reduce((s,r)=>s+r.d.rent.amount,0))}</td><td class="money">${peso(shown.reduce((s,r)=>s+r.d.e.due+r.d.w.due,0))}</td><td class="money">${peso(shown.reduce((s,r)=>s+r.d.total,0))}</td></tr></tfoot></table></div><p class="small muted">Tap a stall to open the statement.</p>`:`<div class="empty">No tenants yet. ${isManager()?"Add them in Tenants.":""}</div>`}
+  </section>
+  <section class="panel"><h2>Today's payments</h2>
+  ${todays.length?`<div class="tbl"><table class="fixed lookup"><colgroup><col style="width:100px"><col style="width:220px"><col><col style="width:130px"><col style="width:130px"><col style="width:120px"></colgroup><thead><tr><th>Time</th><th>Tenant</th><th>For</th><th>Mode</th><th class="r">Amount</th><th>Status</th></tr></thead><tbody>
+  ${todays.map(p=>`<tr class="click" data-stmt="${p.tenant_id}"><td class="num" style="white-space:nowrap">${new Date(p.paid_at).toLocaleTimeString("en-PH",{hour:"numeric",minute:"2-digit",timeZone:"Asia/Manila"})}</td><td><b>${esc(tName(p.tenant_id))}</b><div class="sub">Stall ${esc(tStall(p.tenant_id))}</div></td><td class="small">${coverText(p)}</td><td>${esc(p.channel)}<div class="sub num">${esc(p.ref_no||"")}</div></td><td class="money">${peso(paidAmt(p))}</td><td>${statusPill(p.status)}</td></tr>`).join("")}</tbody></table></div>`:`<div class="small muted">No payments yet today.</div>`}
   </section>`;
+  const q=$("#dashQ"); if(q){ const run=()=>{ S.dashQ=q.value; const v=q.value.trim().toLowerCase(); app.querySelectorAll("#dashTbl tbody tr[data-q]").forEach(tr=>tr.hidden=!!v&&!tr.dataset.q.includes(v)); }; q.oninput=run; run(); }
+  app.querySelectorAll("[data-dashf]").forEach(b=>b.onclick=()=>{ S.dashF=b.dataset.dashf; draw(); });
 }
 
 /* ===== Office: verify ===== */
@@ -570,10 +646,11 @@ function vVerify(){
       <button class="btn ok sm" data-ver="${p.id}" type="button">${p.channel==="Check"?"Check cleared":"Verified with bank"}</button>
       <input id="rej-${p.id}" placeholder="Reason if rejecting" style="flex:1;min-width:160px;padding:6px 10px">
       <button class="btn bad sm" data-rej="${p.id}" type="button">Reject</button>
+      ${isManager()?`<button class="btn sm" data-delpay="${p.id}" type="button">Delete double entry</button>`:""}
     </div></article>`).join(""):`<div class="empty">All caught up. No payments waiting.</div>`}</div>
   <section class="panel"><h3>Recently checked</h3>
   ${recent.length?`<div class="tbl"><table><thead><tr><th>Tenant</th><th>For</th><th>Reference</th><th class="r">Amount</th><th>Status</th><th>Checked by</th><th></th></tr></thead><tbody>
-  ${recent.map(p=>`<tr><td>${esc(tName(p.tenant_id))}</td><td class="small">${coverText(p)}</td><td class="num">${esc(p.ref_no)}</td><td class="r num">${peso(paidAmt(p))}</td><td>${statusPill(p.status)}</td><td class="small">${esc(who(p.verified_by))}<br>${fmtDT(p.verified_at)}</td><td><div class="row" style="flex-wrap:nowrap">${p.status==="verified"?`<button class="btn sm" data-send="${p.id}" type="button">Send</button>`:""}<button class="btn sm" data-undo="${p.id}" type="button">Undo</button></div></td></tr>`).join("")}
+  ${recent.map(p=>`<tr><td>${esc(tName(p.tenant_id))}</td><td class="small">${coverText(p)}</td><td class="num">${esc(p.ref_no)}</td><td class="r num">${peso(paidAmt(p))}</td><td>${statusPill(p.status)}</td><td class="small">${esc(who(p.verified_by))}<br>${fmtDT(p.verified_at)}</td><td><div class="row" style="flex-wrap:nowrap">${p.status==="verified"?`<button class="btn sm" data-send="${p.id}" type="button">Send</button>`:""}<button class="btn sm" data-undo="${p.id}" type="button">Undo</button>${isManager()?`<button class="btn sm bad" data-delpay="${p.id}" type="button">Delete</button>`:""}</div></td></tr>`).join("")}
   </tbody></table></div>`:`<div class="small muted">Nothing checked yet.</div>`}</section>`;
   $("#dlPend").onclick=()=>csv(`EHI-for-bank-check-${todayPH()}.csv`,[["Code","Tenant","Stall","For","Channel","Reference","Amount","Paid on"]].concat(pend.map(p=>[tCode(p.tenant_id),tName(p.tenant_id),tStall(p.tenant_id),coverText(p),p.channel,p.ref_no,p.amount,fmtDT(p.paid_at)])));
 }
@@ -682,7 +759,7 @@ function vInvoices(){
   <section class="panel"><h3>${fmtMonth(m)}</h3>
   ${rows.length?`<div class="tbl"><table><thead><tr><th>Date</th><th>Tenant</th><th>Invoice no.</th><th>Treatment</th><th class="r">VATable</th><th class="r">VAT</th><th class="r">Total</th><th>Sent</th><th></th></tr></thead><tbody>
   ${rows.map(i=>`<tr><td>${fmtDate(i.issued_on)}</td><td>${esc(tName(i.tenant_id))} <span class="code">${esc(tCode(i.tenant_id))}</span></td><td class="num">${esc(i.invoice_no||"Pending")}</td><td class="small">${VAT_MODE[i.vat_mode]}</td><td class="r num">${peso(i.vatable)}</td><td class="r num">${peso(i.vat)}</td><td class="r num"><b>${peso(i.total)}</b></td><td class="small">${i.sent_at?`${esc(i.sent_via||"")} ${fmtDate(i.sent_at)}`:"–"}</td>
-  <td><div class="row" style="flex-wrap:nowrap"><button class="btn sm" data-invsend="${i.id}" type="button">Send</button>${isSuper()?`<button class="btn sm bad" data-delinv="${i.id}" type="button">Delete</button>`:""}</div></td></tr>`).join("")}
+  <td><div class="row" style="flex-wrap:nowrap"><button class="btn sm" data-invsend="${i.id}" type="button">Send</button>${isManager()?`<button class="btn sm bad" data-delinv="${i.id}" type="button">Delete</button>`:""}</div></td></tr>`).join("")}
   </tbody><tfoot><tr><td colspan="4">Total</td><td class="r num">${peso(sum("vatable"))}</td><td class="r num">${peso(sum("vat"))}</td><td class="r num">${peso(sum("total"))}</td><td colspan="2"></td></tr></tfoot></table></div>`:`<div class="small muted">No invoices this month.</div>`}</section>
   <p class="small muted">With "VAT added on top", the VAT is added to the tenant's balance as a VAT line to pay.</p>`;
   $("#iMonth").onchange=e=>{ if(e.target.value){ S.invMonth=e.target.value; draw(); } };
@@ -728,25 +805,33 @@ function vRecord(){
 
 /* ===== Office: tenants ===== */
 function vTenants(){
-  const all=Object.values(S.tenants).sort((a,b)=>(a.stall_no||"").localeCompare(b.stall_no||"",undefined,{numeric:true}));
+  const all=Object.values(S.tenants).sort((a,b)=>(a.stall_no||"").localeCompare(b.stall_no||"",undefined,{numeric:true})||(a.full_name||"").localeCompare(b.full_name||""));
   const loginOf = tid => Object.values(S.profiles).find(p=>p.tenant_id===tid);
-  app.innerHTML = `<div class="spread"><div><h1>Tenants</h1><div class="small muted">${all.filter(t=>t.active).length} active stalls. Tap a row for the statement.</div></div>${isManager()?`<button class="btn primary" id="addT" type="button">Add tenant</button>`:""}</div>
-  <div class="tbl"><table><thead><tr><th>Code</th><th>Stall</th><th>Tenant</th><th>Mobile</th><th>Plan</th><th>Water / Light</th><th class="r">Deposit held</th><th class="r">Balance</th><th>Login</th></tr></thead><tbody>
-  ${all.map(t=>{ const l=loginOf(t.id); return `<tr class="click" data-stmt="${t.id}" style="${t.active?"":"opacity:.55"}"><td><span class="code">${esc(t.code)}</span></td><td>${esc(t.stall_no)}</td><td>${esc(t.full_name)}<div class="small muted">${esc(t.store_name)}</div></td><td class="num small">${esc(t.mobile)}</td><td>${PLAN[t.plan]}<div class="small muted num">${peso(t.rate)}</div></td><td class="small">${{meter:"Meter",fixed:"Fixed",none:"None"}[t.water_mode]} / ${{meter:"Meter",fixed:"Fixed",none:"None"}[t.electric_mode]}</td><td class="r num">${peso(depositHeld(t.id))}</td><td class="r num">${t.active?peso(tenantDue(t.id).total):"Moved out"}</td><td>${l?`<span class="pill ${l.active?"ok":"mute"}">@${esc(l.username)}</span>`:'<span class="pill mute">None</span>'}</td></tr>`; }).join("")||`<tr><td colspan="9" class="muted">No tenants yet.</td></tr>`}
+  const f=S.tF||"active"; const shown=all.filter(t=>f==="all"||(f==="active"?t.active:!t.active));
+  const nA=all.filter(t=>t.active).length, nI=all.length-nA;
+  const wm={meter:"Meter",fixed:"Fixed",none:"None"};
+  app.innerHTML = `<div class="spread"><div><h1>Tenants</h1><div class="small muted">${nA} active · ${nI} inactive. Tap a row for the statement.</div></div>${isManager()?`<button class="btn primary" id="addT" type="button">Add tenant</button>`:""}</div>
+  <div class="toolbar"><div class="seg" role="group" aria-label="Show">${[["active",`Active (${nA})`],["inactive",`Inactive (${nI})`],["all",`All (${all.length})`]].map(([k,l])=>`<button type="button" data-tf="${k}" aria-pressed="${f===k}">${l}</button>`).join("")}</div>
+  <input type="search" id="tQ" placeholder="Search name, store, stall, code, mobile" value="${esc(S.tQ||"")}" aria-label="Search tenants"></div>
+  <div class="tbl"><table class="fixed lookup" id="tTbl"><colgroup><col style="width:80px"><col><col style="width:130px"><col style="width:175px"><col style="width:120px"><col style="width:120px"><col style="width:130px"><col style="width:130px"></colgroup>
+  <thead><tr><th>Stall</th><th>Tenant</th><th>Mobile</th><th>Rent</th><th>Water / Light</th><th class="r">Deposit held</th><th class="r">Balance</th><th>Login</th></tr></thead><tbody>
+  ${shown.map(t=>{ const l=loginOf(t.id); return `<tr class="click" data-stmt="${t.id}" data-q="${esc([t.full_name,t.store_name,t.stall_no,t.code,t.mobile].join(" ").toLowerCase())}" style="${t.active?"":"opacity:.6"}"><td><b>${esc(t.stall_no)}</b><div class="sub"><span class="code">${esc(t.code)}</span></div></td><td><b>${esc(t.full_name)}</b><div class="sub">${esc(t.store_name||"")}${t.active?"":" · Inactive"}</div></td><td class="num small">${esc(t.mobile||"–")}</td><td><span class="rate">${rateText(t)}</span><div class="sub">${PLAN[t.plan]}</div></td><td class="small">${wm[t.water_mode]} / ${wm[t.electric_mode]}</td><td class="money">${peso(depositHeld(t.id))}</td><td class="money">${t.active?peso(tenantDue(t.id).total):'<span class="muted">Inactive</span>'}</td><td>${l?`<span class="pill ${l.active?"ok":"mute"}">@${esc(l.username)}</span>`:'<span class="pill mute">None</span>'}</td></tr>`; }).join("")||`<tr><td colspan="8" class="muted">No ${f==="all"?"":f+" "}tenants.</td></tr>`}
   </tbody></table></div>`;
   const a=$("#addT"); if(a) a.onclick=()=>tenantForm(null);
+  app.querySelectorAll("[data-tf]").forEach(b=>b.onclick=()=>{ S.tF=b.dataset.tf; draw(); });
+  const q=$("#tQ"); const run=()=>{ S.tQ=q.value; const v=q.value.trim().toLowerCase(); app.querySelectorAll("#tTbl tbody tr[data-q]").forEach(tr=>tr.hidden=!!v&&!tr.dataset.q.includes(v)); }; q.oninput=run; run();
 }
 function openStatement(tid){
   const t=T(tid);
-  showDialog(`<div class="spread"><div><h2>${esc(t.full_name)}</h2><div class="muted small"><span class="code">${esc(t.code)}</span> · Stall ${esc(t.stall_no)} · ${esc(t.store_name||"")} · ${esc(t.mobile||"")}</div></div>
-    <div class="row">${canBill()?`<button class="btn sm" data-recfor="${tid}" type="button">Record payment</button>`:""}${isManager()?`<button class="btn sm" data-edit-t="${tid}" type="button">Edit tenant</button>`:""}${canDeposit()&&depositHeld(tid)>0?`<button class="btn sm" data-depmove="${tid}" type="button">Refund or forfeit deposit</button>`:""}<button class="btn sm" data-dlstmt="${tid}" type="button">Excel</button><button class="btn sm" data-prstmt="${tid}" type="button">Print</button><button class="btn sm primary" data-sendstmt="${tid}" type="button">Send to tenant</button></div></div>
+  showDialog(`<div class="spread"><div><h2>${esc(t.full_name)}</h2><div class="muted small"><span class="code">${esc(t.code)}</span> · Stall ${esc(t.stall_no)} · ${esc(t.store_name||"")} · ${esc(t.mobile||"")} · <span class="rate">${rateText(t)}</span>${t.active?"":' · <span class="pill mute">Inactive</span>'}</div></div>
+    <div class="row">${canBill()?`<button class="btn sm" data-recfor="${tid}" type="button">Record payment</button>`:""}${isManager()?`<button class="btn sm" data-edit-t="${tid}" type="button">Edit tenant</button>`:""}${isManager()?`<button class="btn sm bad" data-delten="${tid}" type="button">Delete tenant</button>`:""}${canDeposit()&&depositHeld(tid)>0?`<button class="btn sm" data-depmove="${tid}" type="button">Refund or forfeit deposit</button>`:""}<button class="btn sm" data-dlstmt="${tid}" type="button">Excel</button><button class="btn sm" data-prstmt="${tid}" type="button">Print</button><button class="btn sm primary" data-sendstmt="${tid}" type="button">Send to tenant</button></div></div>
     <div style="display:flex;flex-direction:column;gap:14px;margin-top:12px">${statementHTML(tid)}</div>`);
   hydrateImages($("#dlg"));
 }
 function tenantForm(id){
   const t=id?T(id):{active:true,rent_start:todayPH(),plan:"daily",electric_mode:"meter",water_mode:"meter",deposit_amount:0};
   const modeSel=(idp,v)=>`<select id="${idp}">${[["meter","Submeter reading"],["fixed","Fixed monthly amount"],["none","Not billed"]].map(([k,l])=>`<option value="${k}" ${v===k?"selected":""}>${l}</option>`).join("")}</select>`;
-  showDialog(`<form id="fT" class="panel" style="border:0;padding:0"><h3>${id?"Edit tenant":"Add tenant"}</h3><div id="tErr"></div>
+  showDialog(`<form id="fT" class="panel" style="border:0;padding:0"><h3>${id?"Edit tenant":"Add tenant"}</h3>
   <div class="grid2">
     <label>Full name<input id="tName" required value="${esc(t.full_name)}"></label>
     <label>Store name<input id="tStore" value="${esc(t.store_name)}"></label>
@@ -759,7 +844,7 @@ function tenantForm(id){
   </div>
   <h3>Rent</h3><div class="grid2">
     <label>Payment plan<select id="tPlan">${Object.entries(PLAN).map(([k,l])=>`<option value="${k}" ${t.plan===k?"selected":""}>${l}</option>`).join("")}</select></label>
-    <label>Rent per <span id="tUnit">${PLAN_UNIT[t.plan]}</span> (₱)<input id="tRate" type="number" min="0" step="0.01" required value="${t.rate??""}"></label>
+    <label>Rent per <span id="tUnit">${PLAN_UNIT[t.plan]}</span> (₱)<input id="tRate" type="number" min="0" step="0.01" required inputmode="decimal" value="${t.rate!=null?Number(t.rate).toFixed(2):""}" placeholder="e.g. 1000.00"></label>
     <label>Rent starts on<input id="tStart" type="date" required value="${esc(t.rent_start)}"></label>
     <label>Move-out date (blank if staying)<input id="tEnd" type="date" value="${esc(t.end_date||"")}"></label>
     <label>Security deposit (₱)<input id="tDep" type="number" min="0" step="0.01" value="${Number(t.deposit_amount||0)}"></label>
@@ -770,34 +855,39 @@ function tenantForm(id){
     <label>Water${modeSel("tWm",t.water_mode)}</label><label>Water fixed amount (₱)<input id="tWf" type="number" min="0" step="0.01" value="${Number(t.water_fixed||0)}"></label>
   </div>
   ${id?`<label class="check"><input type="checkbox" id="tActive" ${t.active?"checked":""}> Active tenant</label>`:`<label class="check"><input type="checkbox" id="tLogin" checked> Create a login for this tenant</label>
-  <div class="grid2" id="tLoginBox"><label>Username<input id="tUser" autocapitalize="none"></label><label>Temporary password (8+)<input id="tPass" minlength="8" autocomplete="new-password"></label></div>`}
-  <div><button class="btn primary" type="submit">Save tenant</button></div></form>`);
-  $("#tPlan").onchange=()=>$("#tUnit").textContent=PLAN_UNIT[$("#tPlan").value];
+  <div class="grid2" id="tLoginBox"><label>Username<input id="tUser" autocapitalize="none"></label><label>Temporary password (6+)<input id="tPass" minlength="6" autocomplete="new-password"></label></div>`}
+  <div class="formfoot"><div id="tErr"></div><div class="row"><button class="btn primary" type="submit" id="tSave">Save tenant</button><span class="small muted" id="tRateHint"></span></div></div></form>`);
+  const rh=()=>{ const v=Number($("#tRate").value)||0; $("#tRateHint").textContent=v?`Rent: ${peso(v)} / ${PLAN_UNIT[$("#tPlan").value]}`:""; }; $("#tRate").oninput=rh; rh();
+  $("#tPlan").onchange=()=>{ $("#tUnit").textContent=PLAN_UNIT[$("#tPlan").value]; rh(); };
+  let createdId=null;
   if(!id){ $("#tName").oninput=()=>{ if(!$("#tUser").dataset.touched) $("#tUser").value=suggestUser($("#tName").value); };
     $("#tUser").oninput=()=>$("#tUser").dataset.touched="1"; $("#tPass").value=tempPw();
     $("#tLogin").onchange=()=>$("#tLoginBox").hidden=!$("#tLogin").checked; }
   $("#fT").onsubmit=async e=>{ e.preventDefault();
+    const btn=$("#tSave"); if(btn.disabled) return; btn.disabled=true; btn.textContent="Saving…"; $("#tErr").innerHTML="";
     const row={ full_name:$("#tName").value.trim(), store_name:$("#tStore").value.trim()||null, stall_no:$("#tStall").value.trim(), mobile:$("#tMobile").value.trim()||null,
       address:$("#tAddr").value.trim()||null, email:$("#tEmail").value.trim()||null, messenger:$("#tFb").value.trim()||null, plan:$("#tPlan").value, rate:Number($("#tRate").value)||0, rent_start:$("#tStart").value, end_date:$("#tEnd").value||null,
       deposit_amount:Number($("#tDep").value)||0, electric_mode:$("#tEm").value, electric_fixed:Number($("#tEf").value)||0, water_mode:$("#tWm").value, water_fixed:Number($("#tWf").value)||0 };
     const code=$("#tCode").value.trim(); if(code) row.code=code;
     if(id) row.active=$("#tActive").checked;
+    if(!row.full_name || !row.stall_no || !row.rent_start){ $("#tErr").innerHTML='<div class="err">Fill in full name, stall number, and rent start date.</div>'; btn.disabled=false; btn.textContent="Save tenant"; return; }
     try{
-      let tid=id, saved;
-      if(id){ const r=await sb.from("tenants").update(row).eq("id",id).select().single(); if(r.error) throw r.error; saved=r.data; }
-      else { const r=await sb.from("tenants").insert(row).select().single(); if(r.error) throw r.error; saved=r.data; tid=saved.id; }
+      let tid=id||createdId, saved;
+      if(tid){ const r=await sb.from("tenants").update(row).eq("id",tid).select().single(); if(r.error) throw r.error; saved=r.data; }
+      else { const r=await sb.from("tenants").insert(row).select().single(); if(r.error) throw r.error; saved=r.data; tid=saved.id; createdId=tid; }
       if(row.deposit_amount>0){ const r=await sb.from("charges").upsert({tenant_id:tid,kind:"deposit",period:"deposit",bill_date:row.rent_start,amount:row.deposit_amount,note:"Security deposit"},{onConflict:"tenant_id,kind,period"}); if(r.error) throw r.error; }
       else { await sb.from("charges").delete().eq("tenant_id",tid).eq("kind","deposit").eq("period","deposit"); }
       let shown=false;
-      if(!id && $("#tLogin").checked){
+      if(!id && $("#tLogin").checked && !Object.values(S.profiles).some(x=>x.tenant_id===tid)){
         const u=cleanUser($("#tUser").value), p=$("#tPass").value;
-        await adminCall({action:"create",username:u,password:p,full_name:row.full_name,role:"tenant",tenant_id:tid});
+        try{ await adminCall({action:"create",username:u,password:p,full_name:row.full_name,role:"tenant",tenant_id:tid}); }
+        catch(le){ await refresh(); throw new Error(`Tenant saved as ${saved.code}. The login was not created: ${errMsg(le)} Fix the username or password and tap Save again.`); }
         shown=true;
         showDialog(`<h3>Tenant added</h3><p>Give these to ${esc(row.full_name)}:</p><div class="panel" style="margin-top:10px"><div>Tenant code <b class="num">${esc(saved.code)}</b></div><div>Username <b class="num">${esc(u)}</b></div><div>Temporary password <b class="num">${esc(p)}</b></div></div><p class="small muted" style="margin-top:8px">The password shows once. The tenant sets a new one at first login.</p>`);
       }
       if(!shown){ closeDialog(); toast("Tenant saved"); }
       await refresh();
-    }catch(err){ $("#tErr").innerHTML=`<div class="err">${esc(errMsg(err))}</div>`; }
+    }catch(err){ $("#tErr").innerHTML=`<div class="err">${esc(errMsg(err))}</div>`; btn.disabled=false; btn.textContent="Save tenant"; $("#tErr").scrollIntoView({block:"nearest"}); }
   };
 }
 function depositForm(tid){
@@ -813,6 +903,39 @@ function depositForm(tid){
     const { error }=await sb.from("deposit_moves").insert({tenant_id:tid,kind:$("#dKind").value,amount:amt,moved_on:$("#dDate").value||todayPH(),note:$("#dNote").value.trim()||null});
     if(error){ $("#dErr").innerHTML=`<div class="err">${esc(errMsg(error))}</div>`; return; }
     await refresh(); openStatement(tid); toast("Deposit updated"); };
+}
+
+/* ===== Office: charge history ===== */
+function vCharges(){
+  const fm=S.chM??todayPH().slice(0,7), ft=S.chT||"", fk=S.chK||"";
+  const all=S.charges.slice().sort((a,b)=>(b.bill_date||"").localeCompare(a.bill_date||"")||(b.created_at||"").localeCompare(a.created_at||""));
+  const rows=all.filter(c=>(!fm||String(c.bill_date).slice(0,7)===fm)&&(!ft||c.tenant_id===ft)&&(!fk||c.kind===fk));
+  const tot=k=>rows.filter(c=>!k||c.kind===k).reduce((s,c)=>s+Number(c.amount),0);
+  const canDel=c=>(["electricity","water","other"].includes(c.kind)&&canBill());
+  const det=c=>c.curr_reading!=null?`Reading ${c.prev_reading??"?"} to ${c.curr_reading} = ${r2(c.curr_reading-(c.prev_reading||0))} × ${peso(c.rate)}`:esc(c.note||"");
+  const ten=Object.values(S.tenants).sort((a,b)=>(a.stall_no||"").localeCompare(b.stall_no||"",undefined,{numeric:true}));
+  app.innerHTML = `<div class="spread"><div><h1>Charge history</h1><div class="small muted">Every water, electricity, deposit, VAT, and other charge billed to tenants.</div></div><button class="btn no-print" id="dlCh" type="button">Download Excel</button></div>
+  <div class="toolbar">
+    <label>Month<input type="month" id="chM" value="${fm}"></label>
+    <label class="check" style="align-self:center"><input type="checkbox" id="chAll" ${fm?"":"checked"}> All months</label>
+    <label>Tenant<select id="chT"><option value="">All tenants</option>${ten.map(t=>`<option value="${t.id}" ${t.id===ft?"selected":""}>${esc(t.stall_no)} · ${esc(t.full_name)}${t.active?"":" (inactive)"}</option>`).join("")}</select></label>
+    <label>Type<select id="chK"><option value="">All types</option>${["electricity","water","other","deposit","vat"].map(k=>`<option value="${k}" ${k===fk?"selected":""}>${CATS[k]}</option>`).join("")}</select></label>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="k">Total charges</div><div class="v">${peso(tot())}</div><div class="s">${rows.length} entries</div></div>
+    <div class="stat"><div class="k">Electricity</div><div class="v">${peso(tot("electricity"))}</div></div>
+    <div class="stat"><div class="k">Water</div><div class="v">${peso(tot("water"))}</div></div>
+    <div class="stat"><div class="k">Other, deposit, VAT</div><div class="v">${peso(tot("other")+tot("deposit")+tot("vat"))}</div></div>
+  </div>
+  <div class="tbl"><table class="fixed lookup"><colgroup><col style="width:125px"><col style="width:210px"><col style="width:130px"><col><col style="width:130px"><col style="width:130px"><col style="width:120px"></colgroup>
+  <thead><tr><th>Date</th><th>Tenant</th><th>Type</th><th>Details</th><th class="r">Amount</th><th>Entered by</th><th></th></tr></thead><tbody>
+  ${rows.map(c=>`<tr><td style="white-space:nowrap">${fmtDate(c.bill_date)}</td><td><b>${esc(tName(c.tenant_id))}</b><div class="sub">Stall ${esc(tStall(c.tenant_id))}</div></td><td>${CATS[c.kind]}${/^\d{4}-\d{2}$/.test(c.period||"")?`<div class="sub">${fmtMonth(c.period)}</div>`:""}</td><td class="small">${det(c)}</td><td class="money">${peso(c.amount)}</td><td class="small">${esc(who(c.created_by))||'<span class="muted">System</span>'}<div class="sub">${c.created_at?fmtDT(c.created_at):""}</div></td><td>${canDel(c)?`<button class="btn sm bad" data-delch="${c.id}" type="button">Delete</button>`:c.kind==="deposit"?'<span class="small muted">Edit in tenant</span>':c.kind==="vat"?'<span class="small muted">From invoice</span>':""}</td></tr>`).join("")||`<tr><td colspan="7" class="muted">No charges match.</td></tr>`}
+  </tbody>${rows.length?`<tfoot><tr><td colspan="4">Total</td><td class="money">${peso(tot())}</td><td colspan="2"></td></tr></tfoot>`:""}</table></div>`;
+  $("#chM").onchange=e=>{ S.chM=e.target.value||""; draw(); };
+  $("#chAll").onchange=e=>{ S.chM=e.target.checked?"":todayPH().slice(0,7); draw(); };
+  $("#chT").onchange=e=>{ S.chT=e.target.value; draw(); };
+  $("#chK").onchange=e=>{ S.chK=e.target.value; draw(); };
+  $("#dlCh").onclick=()=>xlsx(`EHI-charges-${fm||"all"}.xlsx`,{"Charges":[["Date","Code","Tenant","Stall","Type","Period","Previous reading","Current reading","Rate","Amount","Note","Entered by","Entered on"]].concat(rows.map(c=>[c.bill_date,tCode(c.tenant_id),tName(c.tenant_id),tStall(c.tenant_id),CATS[c.kind],c.period||"",c.prev_reading??"",c.curr_reading??"",c.rate??"",Number(c.amount),c.note||"",who(c.created_by),c.created_at?fmtDT(c.created_at):""]))});
 }
 
 /* ===== Office: expenses ===== */
@@ -834,7 +957,7 @@ function vExpenses(){
     <div><button class="btn primary" type="submit">Save expense</button></div></form>
   <section class="panel"><h3>${fmtMonth(m)}</h3>
   ${rows.length?`<div class="tbl"><table><thead><tr><th>Date</th><th>Category</th><th>Paid to</th><th>Reference</th><th class="r">Amount</th><th>Entered by</th><th></th></tr></thead><tbody>
-  ${rows.map(x=>`<tr><td>${fmtDate(x.spent_on)}</td><td>${esc(x.category)}</td><td>${esc(x.payee)}${x.note?`<div class="small muted">${esc(x.note)}</div>`:""}</td><td class="num">${esc(x.ref_no)}${x.receipt_path?` <button class="btn sm" data-viewrc="${esc(x.receipt_path)}" type="button">Receipt</button>`:""}</td><td class="r num">${peso(x.amount)}</td><td class="small">${esc(who(x.created_by))}</td><td>${isSuper()?`<button class="btn sm bad" data-delx="${x.id}" type="button">Delete</button>`:""}</td></tr>`).join("")}
+  ${rows.map(x=>`<tr><td>${fmtDate(x.spent_on)}</td><td>${esc(x.category)}</td><td>${esc(x.payee)}${x.note?`<div class="small muted">${esc(x.note)}</div>`:""}</td><td class="num">${esc(x.ref_no)}${x.receipt_path?` <button class="btn sm" data-viewrc="${esc(x.receipt_path)}" type="button">Receipt</button>`:""}</td><td class="r num">${peso(x.amount)}</td><td class="small">${esc(who(x.created_by))}</td><td>${isManager()?`<button class="btn sm bad" data-delx="${x.id}" type="button">Delete</button>`:""}</td></tr>`).join("")}
   </tbody><tfoot><tr><td colspan="4">Total</td><td class="r num">${peso(total)}</td><td colspan="2"></td></tr></tfoot></table></div>`:`<div class="small muted">No expenses for this month.</div>`}</section>`;
   $("#eMonth").onchange=e=>{ if(e.target.value){ S.expMonth=e.target.value; draw(); } };
   $("#fExp").onsubmit=async e=>{ e.preventDefault(); const btn=e.target.querySelector("button[type=submit]"); btn.disabled=true;
@@ -991,8 +1114,8 @@ function vReports(){
     ${collRows.map(([k,c])=>`<tr><td>${esc(k)}</td><td class="r num">${c.n}</td><td class="r num">${peso(c.amt)}</td><td class="r num">${peso(c.ver)}</td><td class="r num">${c.pen?`<span style="color:var(--warn)">${peso(c.pen)}</span>`:"–"}</td><td class="r num">${c.hand?`<span style="color:var(--bad)">${peso(c.hand)}</span>`:"–"}</td></tr>`).join("")}</tbody></table></div>`:`<div class="small muted">No payments in this period.</div>`}</section>
   <section class="panel"><h3>By payment mode</h3>${modes.length?`<div class="tbl"><table><thead><tr><th>Mode</th><th class="r">Payments</th><th class="r">Amount</th><th class="r">Verified</th><th class="r">Deposited to bank</th><th class="r">Not yet deposited</th></tr></thead><tbody>
     ${modes.map(x=>`<tr><td>${x.ch}</td><td class="r num">${x.n}</td><td class="r num">${peso(x.amt)}</td><td class="r num">${peso(x.ver)}</td><td class="r num">${x.ch==="Cash"||x.ch==="Check"?peso(x.dep):"Direct to account"}</td><td class="r num">${x.hand?`<span style="color:var(--bad)">${peso(x.hand)}</span>`:"–"}</td></tr>`).join("")}</tbody></table></div>`:`<div class="small muted">No payments in this period.</div>`}</section>
-  <section class="panel"><h3>Per tenant</h3><div class="tbl"><table><thead><tr><th>Code</th><th>Tenant</th><th>Plan</th><th class="r">Rent periods paid</th><th class="r">Collected</th><th class="r">Checking</th><th class="r">Balance today</th></tr></thead><tbody>
-    ${rows.map(x=>`<tr class="click" data-stmt="${x.t.id}"><td><span class="code">${esc(x.t.code)}</span></td><td>${esc(x.t.full_name)}<div class="small muted">Stall ${esc(x.t.stall_no)}</div></td><td>${PLAN[x.t.plan]}</td><td class="r num">${x.periods-x.unpaid}/${x.periods}</td><td class="r num">${peso(x.collected)}</td><td class="r num">${x.pending?peso(x.pending):"–"}</td><td class="r num">${x.d.total?`<span style="color:var(--bad)">${peso(x.d.total)}</span>`:"–"}</td></tr>`).join("")||`<tr><td colspan="7" class="muted">No tenants yet.</td></tr>`}
+  <section class="panel"><h3>Per tenant</h3><div class="tbl"><table><thead><tr><th>Code</th><th>Tenant</th><th>Rent</th><th class="r">Rent periods paid</th><th class="r">Collected</th><th class="r">Checking</th><th class="r">Balance today</th></tr></thead><tbody>
+    ${rows.map(x=>`<tr class="click" data-stmt="${x.t.id}"><td><span class="code">${esc(x.t.code)}</span></td><td>${esc(x.t.full_name)}<div class="small muted">Stall ${esc(x.t.stall_no)}</div></td><td><span class="rate">${rateText(x.t)}</span></td><td class="r num">${x.periods-x.unpaid}/${x.periods}</td><td class="r num">${peso(x.collected)}</td><td class="r num">${x.pending?peso(x.pending):"–"}</td><td class="r num">${x.d.total?`<span style="color:var(--bad)">${peso(x.d.total)}</span>`:"–"}</td></tr>`).join("")||`<tr><td colspan="7" class="muted">No tenants yet.</td></tr>`}
   </tbody></table></div></section>
   <section class="panel"><h3>Transactions</h3>${F.ps.length?`<div class="tbl"><table><thead><tr><th>Paid on</th><th>Tenant</th><th>For</th><th>Channel</th><th>Reference</th><th class="r">Amount</th><th>Status</th><th>Collected by</th></tr></thead><tbody>
     ${F.ps.map(p=>`<tr><td>${fmtDT(p.paid_at)}</td><td>${esc(tName(p.tenant_id))} <span class="code">${esc(tCode(p.tenant_id))}</span></td><td class="small">${coverText(p)}</td><td>${esc(p.channel)}</td><td class="num">${esc(p.ref_no)}</td><td class="r num">${peso(paidAmt(p))}</td><td>${statusPill(p.status)}</td><td class="small">${esc(collectorOf(p))}</td></tr>`).join("")}</tbody></table></div>`:`<div class="small muted">No transactions in this period.</div>`}</section>`;
@@ -1074,47 +1197,49 @@ function statementCSV(tid){
   xlsx(`EHI-statement-${t.code}-${todayPH()}.xlsx`,{"Summary":[[S.settings.company||"EHI"],["Statement of account as of",todayPH()],["Tenant",t.full_name],["Code",t.code],["Stall",t.stall_no],[],["Rent due",d.rent.amount],["Electricity due",d.e.due],["Water due",d.w.due],["VAT due",d.v.due],["Deposit due",d.d.due],["Other due",d.o.due],["Total balance",d.total],["Deposit held",depositHeld(tid)]],"Ledger":[["Date","Type","Details","Charge","Payment","Status"]].concat(rows)});
 }
 
-/* ===== Superadmin: logins ===== */
+/* ===== Logins (superadmin and admin) ===== */
 function vUsers(){
   const all=Object.values(S.profiles).sort((a,b)=>a.role.localeCompare(b.role)||a.full_name.localeCompare(b.full_name));
-  const sa=role()==="superadmin";
-  if(!sa){
-    app.innerHTML = `<h1>Logins</h1><div class="note">You reset passwords here, including the superadmin's. Only the superadmin creates logins, changes roles, or disables a login.</div>
-    <div class="tbl"><table><thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Status</th><th></th></tr></thead><tbody>
-    ${all.map(p=>`<tr style="${p.active?"":"opacity:.55"}"><td>${esc(p.full_name)}</td><td class="num">@${esc(p.username)}</td><td>${ROLE_LABEL[p.role]}</td><td>${p.active?'<span class="pill ok">Active</span>':'<span class="pill mute">Disabled</span>'}</td><td><button class="btn sm" data-reset="${p.id}" type="button">Reset password</button></td></tr>`).join("")}
-    </tbody></table></div>`;
-    return;
-  }
-  app.innerHTML = `<div class="spread"><div><h1>Logins</h1><div class="small muted">Only you create logins. Usernames are the person's name, e.g. maria.santos.</div></div><button class="btn primary" id="addU" type="button">Create login</button></div>
-  <div class="note">Admin verifies, records payments, bills water and light, enters expenses, and runs reports. Staff verify, record payments, bill water and light, and see collection reports without expenses. Accounting verifies, enters expenses and VAT invoices, and runs reports. You and Admin edit tenants, rates, payment accounts, and the QR code. Admin also resets passwords, including yours.</div>
-  <div class="tbl"><table><thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Tenant</th><th>Status</th><th></th></tr></thead><tbody>
-  ${all.map(p=>`<tr style="${p.active?"":"opacity:.55"}"><td>${esc(p.full_name)}</td><td class="num">@${esc(p.username)}</td><td>${ROLE_LABEL[p.role]}</td><td>${p.tenant_id?`<span class="code">${esc(tCode(p.tenant_id))}</span>`:"–"}</td><td>${p.active?'<span class="pill ok">Active</span>':'<span class="pill mute">Disabled</span>'}</td>
-  <td><div class="row" style="flex-wrap:nowrap"><button class="btn sm" data-reset="${p.id}" type="button">Reset password</button>${p.id!==S.me.id?`<button class="btn sm" data-role="${p.id}" type="button">Change role</button><button class="btn sm ${p.active?"bad":""}" data-active="${p.id}" type="button">${p.active?"Disable":"Enable"}</button>`:""}</div></td></tr>`).join("")}
+  const sa=isSuper();
+  app.innerHTML = `<div class="spread"><div><h1>Logins</h1><div class="small muted">Usernames are the person's name, e.g. maria.santos. New logins and resets use the temporary password <b class="num">${TEMP_PW}</b> unless you type another.</div></div><button class="btn primary" id="addU" type="button">Create login</button></div>
+  <div class="note">${sa?"You create any login, change roles, disable, and delete logins.":"You create staff, accounting, and tenant logins, and reset any password, including the superadmin's. Only the superadmin creates admin logins, changes roles, or disables a login."} Each person sets their own password at first sign-in.</div>
+  <div class="tbl"><table class="lookup"><thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Tenant</th><th>Status</th><th></th></tr></thead><tbody>
+  ${all.map(p=>`<tr style="${p.active?"":"opacity:.55"}"><td><b>${esc(p.full_name)}</b></td><td class="num">@${esc(p.username)}</td><td>${ROLE_LABEL[p.role]}</td><td>${p.tenant_id?`<span class="code">${esc(tCode(p.tenant_id))}</span>`:"–"}</td><td>${p.active?(p.must_change_password?'<span class="pill warn">Temporary password</span>':'<span class="pill ok">Active</span>'):'<span class="pill mute">Disabled</span>'}</td>
+  <td><div class="row" style="flex-wrap:nowrap"><button class="btn sm" data-reset="${p.id}" type="button">Set password</button>${sa&&p.id!==S.me.id?`<button class="btn sm" data-role="${p.id}" type="button">Change role</button><button class="btn sm ${p.active?"bad":""}" data-active="${p.id}" type="button">${p.active?"Disable":"Enable"}</button><button class="btn sm bad" data-dellogin="${p.id}" type="button">Delete</button>`:""}</div></td></tr>`).join("")}
   </tbody></table></div>`;
   $("#addU").onclick=()=>userForm();
+}
+function pwForm(p){
+  showDialog(`<form id="fPwSet" class="panel" style="border:0;padding:0"><h3>Set password for @${esc(p.username)}</h3><p class="small muted">${esc(p.full_name)} · ${ROLE_LABEL[p.role]}. They must choose their own password at next sign-in.</p><div id="psErr"></div>
+    <label>Temporary password (6 or more characters)<input id="psPw" required minlength="6" value="${TEMP_PW}" autocomplete="new-password"></label>
+    <div><button class="btn primary" type="submit" id="psBtn">Save password</button></div></form>`);
+  $("#fPwSet").onsubmit=async e=>{ e.preventDefault(); const btn=$("#psBtn"); if(btn.disabled) return; btn.disabled=true; btn.textContent="Saving…"; const np=$("#psPw").value;
+    try{ await adminCall({action:"reset_password",user_id:p.id,password:np}); await refresh();
+      showDialog(`<h3>Password set</h3><p>Give these to ${esc(p.full_name)}:</p><div class="panel" style="margin-top:10px"><div>Username <b class="num">${esc(p.username)}</b></div><div>Temporary password <b class="num">${esc(np)}</b></div></div><p class="small muted" style="margin-top:8px">They set a new password at next sign-in.</p>`); }
+    catch(err){ $("#psErr").innerHTML=`<div class="err">${esc(errMsg(err))}</div>`; btn.disabled=false; btn.textContent="Save password"; } };
 }
 function tenantOptions(sel){ return activeTenants().map(t=>`<option value="${t.id}" ${t.id===sel?"selected":""}>${esc(t.code)} · ${esc(t.full_name)}</option>`).join(""); }
 function userForm(){
   showDialog(`<form id="fU" class="panel" style="border:0;padding:0"><h3>Create login</h3><div id="uErr"></div><div class="grid2">
     <label>Full name<input id="uName" required></label>
     <label>Username<input id="uUser" required autocapitalize="none"></label>
-    <label>Role<select id="uRole"><option value="admin">Admin</option><option value="staff">Staff</option><option value="accounting">Accounting</option><option value="tenant">Tenant</option><option value="superadmin">Superadmin</option></select></label>
+    <label>Role<select id="uRole">${(isSuper()?["staff","accounting","tenant","admin","superadmin"]:["staff","accounting","tenant"]).map(r=>`<option value="${r}">${ROLE_LABEL[r]}</option>`).join("")}</select></label>
     <label id="uTenantL" hidden>Tenant<select id="uTenant">${tenantOptions()}</select></label>
-    <label>Temporary password (8+)<input id="uPass" required minlength="8" autocomplete="new-password"></label>
-  </div><div><button class="btn primary" type="submit">Create login</button></div></form>`);
+    <label>Temporary password (6+)<input id="uPass" required minlength="6" autocomplete="new-password"></label>
+  </div><div><button class="btn primary" type="submit" id="uBtn">Create login</button></div></form>`);
   $("#uPass").value=tempPw();
   $("#uName").oninput=()=>{ if(!$("#uUser").dataset.touched) $("#uUser").value=suggestUser($("#uName").value); };
   $("#uUser").oninput=()=>$("#uUser").dataset.touched="1";
   $("#uRole").onchange=()=>{ $("#uTenantL").hidden=$("#uRole").value!=="tenant"; };
-  $("#fU").onsubmit=async e=>{ e.preventDefault();
+  $("#fU").onsubmit=async e=>{ e.preventDefault(); const btn=$("#uBtn"); if(btn.disabled) return; btn.disabled=true; btn.textContent="Saving…";
     const u=cleanUser($("#uUser").value), p=$("#uPass").value, name=$("#uName").value.trim(), r=$("#uRole").value;
     try{ await adminCall({action:"create",username:u,password:p,full_name:name,role:r,tenant_id:r==="tenant"?$("#uTenant").value:null});
       showDialog(`<h3>Login created</h3><p>Give these to ${esc(name)} (${ROLE_LABEL[r]}):</p><div class="panel" style="margin-top:10px"><div>Username <b class="num">${esc(u)}</b></div><div>Temporary password <b class="num">${esc(p)}</b></div></div><p class="small muted" style="margin-top:8px">This password shows once. They set a new one at first login.</p>`);
       await refresh();
-    }catch(err){ $("#uErr").innerHTML=`<div class="err">${esc(errMsg(err))}</div>`; } };
+    }catch(err){ $("#uErr").innerHTML=`<div class="err">${esc(errMsg(err))}</div>`; btn.disabled=false; btn.textContent="Create login"; } };
 }
 
-/* ===== Superadmin: settings ===== */
+/* ===== Settings (superadmin and admin) ===== */
 function vSettings(){
   const c=S.settings; const acc=(c.accounts&&c.accounts.length?c.accounts:[{channel:"GCash",name:"",number:""},{channel:"Maya",name:"",number:""},{channel:"Bank (InstaPay)",name:"",number:""}]);
   app.innerHTML = `<h1>Settings</h1>
@@ -1127,12 +1252,24 @@ function vSettings(){
     <div><button class="btn primary" type="submit">Save settings</button></div></form>
   <section class="panel" style="max-width:780px"><h3>Payment QR code</h3><p class="small muted">Upload EHI's bank or QR Ph code. Tenants see it on their Pay screen.</p>
     ${qrUrl()?`<img class="qr" src="${esc(qrUrl())}" alt="Current QR code">`:""}
-    <div class="row"><input id="qrFile" type="file" accept="image/*" style="max-width:320px"><button class="btn" id="qrUp" type="button">Upload QR</button></div></section>`;
+    <div class="row"><input id="qrFile" type="file" accept="image/*" style="max-width:320px"><button class="btn" id="qrUp" type="button">Upload QR</button></div></section>
+  ${isSuper()?`<section class="danger" style="max-width:780px"><h3 style="color:var(--bad)">Clear test data</h3>
+    <p class="small">Use this once before going live, to remove the records you entered for testing. This cannot be undone. Logins of staff, accounting, admin, and you stay.</p>
+    <label class="check"><input type="radio" name="clr" value="transactions" checked> Delete all payments, charges, water and light bills, VAT invoices, deposits, and expenses. Keep the tenants.</label>
+    <label class="check"><input type="radio" name="clr" value="everything"> Delete everything above, plus all tenants and their logins.</label>
+    <label>Type DELETE to confirm<input id="clrTxt" autocomplete="off" style="max-width:220px"></label>
+    <div><button class="btn bad" id="clrBtn" type="button">Clear test data</button></div>
+    <p class="small muted">To remove one tenant or one payment only, open the tenant and use Delete.</p></section>`:""}`;
   restoreForms();
   $("#fSet").onsubmit=async e=>{ e.preventDefault();
     const accounts=acc.map((a,i)=>({channel:$("#aC"+i).value.trim(),name:$("#aN"+i).value.trim(),number:$("#aU"+i).value.trim()})).filter(a=>a.channel||a.name||a.number);
     const { error }=await sb.from("settings").update({company:$("#sCo").value.trim()||"EHI",vat_rate:Number($("#sVat").value)||0,accounts,updated_at:new Date().toISOString()}).eq("id",1);
     if(error) return toast(errMsg(error)); delete keep.fSet; await refresh(); toast("Settings saved"); };
+  const cb=$("#clrBtn"); if(cb) cb.onclick=async()=>{ if($("#clrTxt").value.trim()!=="DELETE") return toast("Type DELETE in the box to confirm");
+    const scope=(app.querySelector('input[name=clr]:checked')||{}).value; cb.disabled=true; cb.textContent="Clearing…";
+    const { data, error }=await sb.rpc("clear_test_data",{p_scope:scope});
+    if(error){ cb.disabled=false; cb.textContent="Clear test data"; return toast(errMsg(error)); }
+    await removeFiles(data&&data.receipts); await refresh(); toast(`Cleared ${data.payments} payments${scope==="everything"?` and ${data.tenants} tenants`:""}`); };
   $("#qrUp").onclick=async()=>{ const f=$("#qrFile").files[0]; if(!f) return toast("Choose an image first");
     const path=`ehi-qr-${Date.now()}.${(f.name.split(".").pop()||"png").toLowerCase()}`;
     const up=await sb.storage.from("qr").upload(path,f,{contentType:f.type}); if(up.error) return toast(errMsg(up.error));
@@ -1174,8 +1311,21 @@ async function onClick(e){
     return;
   }
   if(b.dataset.undo){ const { error }=await sb.from("payments").update({status:"pending"}).eq("id",b.dataset.undo); if(error) return toast(errMsg(error)); toast("Moved back to checking"); refresh(); return; }
-  if(b.dataset.reset){ const p=S.profiles[b.dataset.reset]; const np=tempPw();
-    try{ await adminCall({action:"reset_password",user_id:p.id,password:np}); showDialog(`<h3>Password reset</h3><p>New temporary password for @${esc(p.username)}:</p><div class="panel" style="margin-top:10px"><b class="num">${esc(np)}</b></div><p class="small muted" style="margin-top:8px">They set a new one at next login.</p>`); }catch(err){ toast(errMsg(err)); } return; }
+  if(b.dataset.reset){ pwForm(S.profiles[b.dataset.reset]); return; }
+  if(b.dataset.dellogin){ if(b.dataset.armed!=="1"){ b.dataset.armed="1"; b.textContent="Tap again to delete"; return; }
+    try{ await adminCall({action:"delete_login",user_id:b.dataset.dellogin}); await refresh(); toast("Login deleted"); }catch(err){ toast(errMsg(err)); } return; }
+  if(b.dataset.delpay){ if(b.dataset.armed!=="1"){ b.dataset.armed="1"; b.textContent="Tap again to delete"; return; }
+    const p=S.payments.find(x=>x.id===b.dataset.delpay); b.disabled=true;
+    const { error }=await sb.from("payments").delete().eq("id",b.dataset.delpay); if(error){ b.disabled=false; return toast(errMsg(error)); }
+    if(p&&p.receipt_path) await removeFiles([p.receipt_path]);
+    const reopen=$("#dlg").open&&p; await refresh(); if(reopen) openStatement(p.tenant_id); toast("Payment deleted"); return; }
+  if(b.dataset.delch){ if(b.dataset.armed!=="1"){ b.dataset.armed="1"; b.textContent="Tap again to delete"; return; }
+    const { error }=await sb.from("charges").delete().eq("id",b.dataset.delch); if(error) return toast(errMsg(error)); await refresh(); toast("Charge deleted"); return; }
+  if(b.dataset.delten){ const t=T(b.dataset.delten); const has=S.payments.some(p=>p.tenant_id===t.id)||S.invoices.some(i=>i.tenant_id===t.id)||S.moves.some(m=>m.tenant_id===t.id);
+    if(has && !isSuper()) return toast("This tenant has payments or invoices. Mark it inactive in Edit tenant, or ask the superadmin to delete it.");
+    if(b.dataset.armed!=="1"){ b.dataset.armed="1"; b.textContent=has?"Deletes all its records. Tap again":"Tap again to delete"; return; }
+    b.disabled=true; const { data, error }=await sb.rpc("delete_tenant",{p_tenant:t.id}); if(error){ b.disabled=false; return toast(errMsg(error)); }
+    await removeFiles(data&&data.receipts); closeDialog(); await refresh(); toast(`${t.full_name} deleted`); return; }
   if(b.dataset.active){ const p=S.profiles[b.dataset.active];
     try{ await adminCall({action:"set_active",user_id:p.id,active:!p.active}); await refresh(); toast(p.active?"Login disabled":"Login enabled"); }catch(err){ toast(errMsg(err)); } return; }
   if(b.dataset.role){ const p=S.profiles[b.dataset.role];
